@@ -3,8 +3,11 @@ module linux-mcp-server-go
 go 1.24.4
 
 require (
-	github.com/modelcontextprotocol/go-sdk v0.1.0
-	golang.org/x/crypto v0.31.0
+	github.com/modelcontextprotocol/go-sdk v0.2.0
+	golang.org/x/crypto v0.40.0
 )
 
-require golang.org/x/sys v0.28.0 // indirect
+require (
+	github.com/yosida95/uritemplate/v3 v3.0.2 // indirect
+	golang.org/x/sys v0.34.0 // indirect
+)

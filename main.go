@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/modelcontextprotocol/go-sdk/jsonschema"
 	"log"
 	"net/http"
 	"os"
@@ -152,12 +153,24 @@ func main() {
 	log.Println("Starting Linux MCP Server Go v0.0.1")
 	log.Println("Initializing MCP server...")
 
-	server := mcp.NewServer("linux_mcp_server", "v0.0.1", nil)
-	server.AddTools(mcp.NewServerTool("execute_shell", "execute shell command on remote machine via SSH", ExecuteShell, mcp.Input(
-		mcp.Property("machine_ip", mcp.Description("the IP address of the target machine")),
-		mcp.Property("path", mcp.Description("the working directory path on remote machine")),
-		mcp.Property("shell", mcp.Description("the shell command to execute")),
-	)))
+	server := mcp.NewServer(&mcp.Implementation{
+		Name:    "linux_mcp_server",
+		Version: "v0.0.1",
+	}, nil)
+
+	mcp.AddTool(server, &mcp.Tool{
+		Name:        "execute_shell",
+		Description: "execute shell command on remote machine via SSH",
+		InputSchema: &jsonschema.Schema{
+			Type:     "object",
+			Required: []string{"machine_ip", "path", "shell"},
+			Properties: map[string]*jsonschema.Schema{
+				"machine_ip": {Type: "string", Description: "the IP address of the target machine"},
+				"path":       {Type: "string", Description: "the working directory path on remote machine"},
+				"shell":      {Type: "string", Description: "the shell command to execute"},
+			},
+		},
+	}, ExecuteShell)
 
 	log.Println("MCP server initialized with execute_shell tool")
 
